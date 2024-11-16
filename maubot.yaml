@@ -1,0 +1,14 @@
+# SPDX-FileCopyrightText: 2024 HarHarLinks <2803622+HarHarLinks@users.noreply.github.com>
+#
+# SPDX-License-Identifier: MIT
+
+maubot: 0.1.0
+id: de.sosnowkadub.idonthavespotify
+version: 1.0.0
+license: MIT
+modules:
+  - idonthavespotify
+main_class: idonthavespotify/IDontHaveSpotifyPlugin
+config: true
+extra_files:
+  - base-config.yaml
