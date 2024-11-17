@@ -8,6 +8,11 @@ SPDX-License-Identifier: MIT
 
 Find and convert Spotify links shared in [Matrix](https://matrix.org) chat rooms automatically to your preferred streaming service using [idonthavespotify](https://github.com/sjdonado/idonthavespotify) using this [Maubot](https://mau.bot) plugin.
 
+![Screenshot of the bot in action. It replies to a message containing a spotify link with alternative links to YouTube, Apple Music, deezer, Soundcloud, and Tidal.](./example.png)
+
+Screenshot taken in an Element Desktop in dark mode.
+The ✅/❓ indicate verification status as reported by the idonthavespotify API.
+
 ## Installation
 
 See <https://docs.mau.fi/maubot/usage/basic.html>.
