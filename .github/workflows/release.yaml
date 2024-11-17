@@ -1,0 +1,52 @@
+name: Release Maubot Plugin
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Extract version from maubot.yaml
+      run: |
+        VERSION=v$(cat maubot.yaml | grep 'version' | cut -d ':' -f 2 | xargs)
+        echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+    - name: Generate package name from maubot.yaml
+      run: |
+        NAME=$(cat maubot.yaml | grep 'id' | cut -d ':' -f 2 | head -1 | xargs )
+        PACKAGE="${NAME}-${{ env.VERSION }}.mbp"
+        echo "PACKAGE=$PACKAGE" >> $GITHUB_ENV
+
+    - name: Check if release already exists
+      run: |
+        RELEASE_EXIST=$(gh release view ${{ env.VERSION }} > /dev/null 2>&1 && echo "true" || echo "false")
+        echo "RELEASE_EXIST=$RELEASE_EXIST" >> $GITHUB_ENV
+
+    - name: Generate Changelog
+      if: env.RELEASE_EXIST == 'false'
+      run: |
+        echo "Changelog:" > CHANGELOG.md
+        git log $(git describe --tags --abbrev=0)..HEAD --pretty=format:"- %h: %s" -- base-config.yaml maubot.yaml idonthavespotify.py >> CHANGELOG.md
+
+    - name: Package Release
+      if: env.RELEASE_EXIST == 'false'
+      run: |
+        zip -9r ${{ env.PACKAGE }} base-config.yaml maubot.yaml idonthavespotify.py
+
+    - name: Create and Upload GitHub Release
+      if: env.RELEASE_EXIST == 'false'
+      run: |
+        gh release create ${{ env.VERSION }} ${{ env.PACKAGE }} -t ${{ env.VERSION }} -F CHANGELOG.md
