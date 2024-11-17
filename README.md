@@ -16,6 +16,8 @@ The plugin supports one configuration option: `API`.
 This URL will be called to resolve the Spotify link to other streaming services.
 For maximum privacy, you can self-host idonthavespotify.
 
+This version of maubot-idonthavespotify is tested to be compatible with idonthavespotify [v1.4.1](https://github.com/sjdonado/idonthavespotify/releases).
+
 ## Development
 
 ```
