@@ -1,1 +1,3 @@
 API: https://idonthavespotify.donado.co/api/search?v=1
+services:  # any of spotify, apple, deezer, soundcloud, tidal, youtube
+  - spotify
