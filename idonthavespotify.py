@@ -5,7 +5,7 @@
 import re
 from typing import Dict, Type
 
-import requests
+import aiohttp
 from maubot import Plugin, MessageEvent
 from maubot.handlers import event
 from mautrix.types import MessageType, EventType
@@ -82,7 +82,7 @@ class IDontHaveSpotifyPlugin(Plugin):
             if match:
                 spotify_url = match.group(0)
                 self.log.info(f"extracted spotify url {spotify_url}")
-                not_spotify = self.transform_link(spotify_url)
+                not_spotify = await self.transform_link(spotify_url)
                 self.log.debug(f"api returned {not_spotify}")
                 formatted_message = format_message(not_spotify)
                 self.log.debug(f"sending response {formatted_message}")
@@ -92,18 +92,18 @@ class IDontHaveSpotifyPlugin(Plugin):
                 else:
                     await evt.reply("Sorry, I couldn't process the Spotify link.")
 
-    def transform_link(self, spotify_url):
+    async def transform_link(self, spotify_url) -> Dict:
         api_url = self.config["API"]
         data = {"link": spotify_url, "adapters[]": ["spotify"]}
 
         try:
-            response = requests.post(api_url, data=data)
-
-            if response.status_code == 200:
-                return response.json()
-            else:
-                print(f"Error: Unable to process the request (Status code: {response.status_code})")
-                return None
+            async with aiohttp.ClientSession() as session:
+                async with session.post(api_url, data=data) as response:
+                    if response.status == 200:
+                        return await response.json()
+                    else:
+                        print(f"Error: Unable to process the request (Status code: {response.status})")
+                        return None
         except Exception as e:
             self.log.warning(f"Error making API request: {e}")
             return None
