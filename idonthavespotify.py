@@ -141,11 +141,11 @@ class IDontHaveSpotifyPlugin(Plugin):
 
     async def transform_link(self, spotify_url) -> Union[Dict, None]:
         api_url = self.config["API"]
-        data = {"link": spotify_url, "adapters[]": ["spotify"]}
+        data = {"link": spotify_url}
 
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.post(api_url, data=data) as response:
+                async with session.post(api_url, json=data) as response:
                     if response.status == 200:
                         return await response.json()
                     else:
